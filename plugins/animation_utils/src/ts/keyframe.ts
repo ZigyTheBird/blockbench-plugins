@@ -46,8 +46,20 @@ function keyframeGetLerp(other, axis, amount, allow_expression) {
     if (Format.id !== "animated_entity_model") {
         return Monkeypatches.get(Keyframe).getLerp.apply(this, arguments);
     }
+
+    const start = this.calc(axis);
+    const stop = other.calc(axis);
     let easingFunc = easingFunctions[easing];
-    if (isArgsEasing(easing)) {
+    if (easing === "catmullrom") {
+        const sorted = this.animator[this.channel].slice().sort((kf1, kf2) => (kf1.time - kf2.time));
+        const before_index = sorted.indexOf(this);
+        const before_plus = sorted[before_index-1];
+        const after_plus = sorted[before_index+2];
+        const before_plus_value = typeof before_plus === 'undefined' || before_plus === null ? start : before_plus.calc(axis);
+        const after_plus_value = typeof after_plus === 'undefined' || after_plus === null ? stop : after_plus.calc(axis);
+        return easingFunc(before_plus_value, start, stop, after_plus_value, amount);
+    }
+    else if (isArgsEasing(easing)) {
         const arg1 = Array.isArray(other.easingArgs) && other.easingArgs.length > 0
             ? other.easingArgs[0]
             : getEasingArgDefault(other);
@@ -55,8 +67,6 @@ function keyframeGetLerp(other, axis, amount, allow_expression) {
         easingFunc = easingFunc.bind(null, arg1);
     }
     const easedAmount = easingFunc(amount);
-    const start = this.calc(axis);
-    const stop = other.calc(axis);
     const result = lerp(start, stop, easedAmount);
     // console.log('keyframeGetLerp easing:', easing, 'arguments:', arguments, 'start:', start, 'stop:', stop, 'amount:', amount, 'easedAmount:', easedAmount, 'result:', result);
     if (Number.isNaN(result)) {

@@ -6519,7 +6519,7 @@ const updateKeyframeSelectionCallback = ( /*...args*/) => {
                     const finalEasingType = easingTypeToTypeId(inputEasingOrType);
                     finalEasing += finalEasingType + easing.substring(0, 1).toUpperCase() + easing.substring(1);
                 }
-                else if (inputEasingOrType === "linear" || inputEasingOrType == "step") {
+                else if (inputEasingOrType === "linear" || inputEasingOrType == "step" || inputEasingOrType == "single_step" || inputEasingOrType == "catmullrom") {
                     finalEasing = inputEasingOrType;
                 }
                 else {
@@ -6567,11 +6567,13 @@ const updateKeyframeSelectionCallback = ( /*...args*/) => {
             addEasingTypeIcons(easingBar, "back", "Switch to Back easing");
             addEasingTypeIcons(easingBar, "elastic", "Switch to Elastic easing");
             addEasingTypeIcons(easingBar, "bounce", "Switch to Bounce easing");
+            addEasingTypeIcons(easingBar, "catmullrom", "Switch to Catmull-Rom easing");
+            addEasingTypeIcons(easingBar, "single_step", "Switch to no easing");
             const keyEasing = getEasingInterpolation(displayedEasing);
             const keyEasingElement = document.getElementById("kf_easing_type_" + keyEasing);
             keyEasingElement.style.stroke = "var(--color-accent)";
             keyEasingElement.classList.add('selected_kf_easing');
-            if (!(keyEasing === "linear" || keyEasing == "step")) {
+            if (!(keyEasing === "linear" || keyEasing == "step" || keyEasing == "single_step" || keyEasing == "catmullrom")) {
                 let easingTypeBar = document.createElement('div');
                 keyframe.appendChild(easingTypeBar);
                 easingTypeBar.outerHTML = `<div class="bar flex" id="keyframe_bar_easing_type">
@@ -6664,6 +6666,10 @@ const getIcon = (name) => {
             return '<svg width="24" height="24" viewBox="0 0 6.3499999 6.3500002"><g transform="translate(0,-290.64998)"><path d="m 0.52916667,296.47081 c 1.32291663,0 4.23333333,-3.43958 5.29166663,-5.29166" style="fill:none;stroke-width:0.5291667;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/></g></svg>';
         case "step":
             return '<svg viewBox="0 0 6.3499999 6.3500002" height="24" width="24"><g transform="translate(0,-290.64998)"><path d="m 0.52916667,296.47081 0,-1.32291 H 1.8520833 v -1.32292 H 3.175 v -1.32292 h 1.3229167 v -1.32291 l 1.3229166,1e-5" style="fill:none;stroke-width:0.52899998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/></g></svg>';
+        case "single_step":
+            return '<svg viewBox="0 0 6.3499999 6.3500002" height="24" width="24"><g transform="translate(0,-290.64998)"><path d="M 0.5292 296.4708 L 5.8208 296.4708" style="fill:none;stroke-width:0.52916667;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/></g></svg>';
+        case "catmullrom":
+            return '<svg width="24" height="14.089" viewBox="0 -2.5 18 10.567"><path d="M16.206 1.051c-0.129 0.074 -0.147 0.362 -0.037 0.473 0.043 0.043 0.129 0.074 0.203 0.074s0.16 -0.031 0.203 -0.074c0.117 -0.117 0.092 -0.405 -0.043 -0.479 -0.147 -0.074 -0.19 -0.074 -0.326 0.006m-0.639 0.7c-0.025 0.055 -0.012 0.129 0.025 0.166 0.092 0.092 0.27 0.006 0.246 -0.117 -0.025 -0.141 -0.221 -0.178 -0.27 -0.049m-0.43 0.491c-0.025 0.055 -0.012 0.129 0.025 0.166 0.092 0.092 0.27 0.006 0.246 -0.117 -0.025 -0.141 -0.221 -0.178 -0.27 -0.049m-0.369 0.553c-0.025 0.055 -0.012 0.129 0.025 0.166 0.092 0.092 0.27 0.006 0.246 -0.117 -0.025 -0.141 -0.221 -0.178 -0.27 -0.049m-0.491 0.491c-0.025 0.055 -0.012 0.129 0.025 0.166 0.092 0.092 0.27 0.006 0.246 -0.117 -0.025 -0.141 -0.221 -0.178 -0.27 -0.049m-0.43 0.491c-0.025 0.055 -0.012 0.129 0.025 0.166 0.092 0.092 0.27 0.006 0.246 -0.117 -0.025 -0.141 -0.221 -0.178 -0.27 -0.049M6.07 3.999c-0.16 0.086 -0.141 0.399 0.018 0.485 0.178 0.098 0.424 0.025 0.424 -0.123 0 -0.061 0.018 -0.129 0.049 -0.141 0.123 -0.074 1.032 0.203 2.132 0.639 0.749 0.301 1.456 0.541 1.812 0.614 0.319 0.068 0.584 0.129 0.584 0.135s0.031 0.068 0.068 0.135c0.141 0.258 0.516 0.129 0.516 -0.178 0 -0.27 -0.289 -0.375 -0.498 -0.184 -0.104 0.092 -0.166 0.086 -0.805 -0.086 -0.381 -0.104 -1.118 -0.35 -1.64 -0.559 -1.032 -0.405 -1.72 -0.62 -2.015 -0.62 -0.104 0 -0.221 -0.043 -0.264 -0.092 -0.086 -0.104 -0.227 -0.117 -0.381 -0.025m7.286 0.27c-0.025 0.055 -0.012 0.129 0.025 0.166 0.092 0.092 0.27 0.006 0.246 -0.117 -0.025 -0.141 -0.221 -0.178 -0.27 -0.049m-7.741 0.061c-0.025 0.055 -0.012 0.129 0.025 0.166 0.092 0.092 0.27 0.006 0.246 -0.117 -0.025 -0.141 -0.221 -0.178 -0.27 -0.049m-0.676 0.307c-0.025 0.055 -0.012 0.129 0.025 0.166 0.092 0.092 0.27 0.006 0.246 -0.117 -0.025 -0.141 -0.221 -0.178 -0.27 -0.049m7.925 0.061c-0.025 0.055 -0.012 0.129 0.025 0.166 0.092 0.092 0.27 0.006 0.246 -0.117 -0.025 -0.141 -0.221 -0.178 -0.27 -0.049m-8.355 0.307c-0.025 0.055 -0.012 0.129 0.025 0.166 0.092 0.092 0.27 0.006 0.246 -0.117 -0.025 -0.141 -0.221 -0.178 -0.27 -0.049m7.802 0.123c-0.025 0.055 -0.012 0.129 0.025 0.166 0.092 0.092 0.27 0.006 0.246 -0.117 -0.025 -0.141 -0.221 -0.178 -0.27 -0.049m-0.553 0.246c-0.025 0.055 -0.012 0.129 0.025 0.166 0.092 0.092 0.27 0.006 0.246 -0.117 -0.025 -0.141 -0.221 -0.178 -0.27 -0.049m-7.802 0.123c-0.025 0.055 -0.012 0.129 0.025 0.166 0.092 0.092 0.27 0.006 0.246 -0.117 -0.025 -0.141 -0.221 -0.178 -0.27 -0.049m-0.491 0.43c-0.025 0.055 -0.012 0.129 0.025 0.166 0.092 0.092 0.27 0.006 0.246 -0.117 -0.025 -0.141 -0.221 -0.178 -0.27 -0.049m-0.491 0.553c-0.025 0.055 -0.012 0.129 0.025 0.166 0.092 0.092 0.27 0.006 0.246 -0.117 -0.025 -0.141 -0.221 -0.178 -0.27 -0.049m-0.491 0.43c-0.025 0.055 -0.012 0.129 0.025 0.166 0.092 0.092 0.27 0.006 0.246 -0.117 -0.025 -0.141 -0.221 -0.178 -0.27 -0.049M1.72 7.501c-0.117 0.209 0.012 0.424 0.24 0.424 0.209 0 0.326 -0.154 0.295 -0.381 -0.018 -0.111 -0.068 -0.147 -0.246 -0.16 -0.172 -0.012 -0.233 0.006 -0.289 0.117"/></svg>';
         default: // linear
             return '<svg viewBox="0 0 6.3499999 6.3500002" height="24" width="24"><g transform="translate(0,-290.64998)"><path d="M 0.52916667,296.47081 5.8208333,291.17915" style="fill:none;stroke-width:0.52916667;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/></g></svg>';
     }
@@ -7300,6 +7306,17 @@ class Easing {
             return 1 - easing((1 - t) * 2) / 2;
         };
     }
+    /**
+     * No easing, just snaps to the next keyframe when it's timestamp is reached.
+     */
+    static singleStep(t) {
+        return t === 1 ? 1 : 0;
+    }
+    static catmullRom(n1, n2, n3, n4, t) {
+        return 0.5 * (2.0 * n2 + (n3 - n1) * t +
+            (2.0 * n1 - 5.0 * n2 + 4.0 * n3 - n4) * t * t +
+            (3.0 * n2 - n1 - 3.0 * n3 + n4) * t * t * t);
+    }
 }
 const quart = Easing.poly(4);
 const quint = Easing.poly(5);
@@ -7342,6 +7359,8 @@ const easingFunctions = {
     easeInBounce: bounce.bind(null, Easing.in),
     easeOutBounce: bounce.bind(null, Easing.out),
     easeInOutBounce: bounce.bind(null, Easing.inOut),
+    single_step: Easing.singleStep,
+    catmullrom: Easing.catmullRom,
 };
 // Object with the same keys as easingFunctions and values of the stringified key names
 const EASING_OPTIONS = Object.freeze(Object.fromEntries(Object.entries(easingFunctions).map(entry => ([entry[0], entry[0]]))));
@@ -7833,8 +7852,19 @@ function keyframeGetLerp(other, axis, amount, allow_expression) {
     if (Format.id !== "animated_entity_model") {
         return _utils__WEBPACK_IMPORTED_MODULE_2__.Monkeypatches.get(Keyframe).getLerp.apply(this, arguments);
     }
+    const start = this.calc(axis);
+    const stop = other.calc(axis);
     let easingFunc = _easing__WEBPACK_IMPORTED_MODULE_3__.easingFunctions[easing];
-    if ((0,_easing__WEBPACK_IMPORTED_MODULE_3__.isArgsEasing)(easing)) {
+    if (easing === "catmullrom") {
+        const sorted = this.animator[this.channel].slice().sort((kf1, kf2) => (kf1.time - kf2.time));
+        const before_index = sorted.indexOf(this);
+        const before_plus = sorted[before_index - 1];
+        const after_plus = sorted[before_index + 2];
+        const before_plus_value = typeof before_plus === 'undefined' || before_plus === null ? start : before_plus.calc(axis);
+        const after_plus_value = typeof after_plus === 'undefined' || after_plus === null ? stop : after_plus.calc(axis);
+        return easingFunc(before_plus_value, start, stop, after_plus_value, amount);
+    }
+    else if ((0,_easing__WEBPACK_IMPORTED_MODULE_3__.isArgsEasing)(easing)) {
         const arg1 = Array.isArray(other.easingArgs) && other.easingArgs.length > 0
             ? other.easingArgs[0]
             : (0,_easing__WEBPACK_IMPORTED_MODULE_3__.getEasingArgDefault)(other);
@@ -7842,8 +7872,6 @@ function keyframeGetLerp(other, axis, amount, allow_expression) {
         easingFunc = easingFunc.bind(null, arg1);
     }
     const easedAmount = easingFunc(amount);
-    const start = this.calc(axis);
-    const stop = other.calc(axis);
     const result = lerp(start, stop, easedAmount);
     // console.log('keyframeGetLerp easing:', easing, 'arguments:', arguments, 'start:', start, 'stop:', stop, 'amount:', amount, 'easedAmount:', easedAmount, 'result:', result);
     if (Number.isNaN(result)) {
@@ -8118,7 +8146,7 @@ const hasModelDisplaySettings = () => isGeckoLibModel() && Project && ((Project[
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"animation_utils","version":"4.0","private":true,"description":"GeckoLib","main":"index.js","scripts":{"prebuild":"npm run test","build":"npm run build:only","build:only":"webpack && npm run update_manifest","update_manifest":"node scripts/updateManifest.mjs","start":"webpack --watch --mode=development","lint":"eslint .","lint:fix":"eslint --fix .","tsc":"tsc --noEmit","pretest":"npm run lint && npm run tsc","test":"npm run test:only","test:only":"jest"},"author":"Eliot Lash, Tslat, Gecko, McHorse","license":"MIT","blockbenchConfig":{"title":"GeckoLib Animation Utils","author":"Eliot Lash, Tslat, Gecko, McHorse","icon":"icon.png","description":"Create animated blocks, items, entities, and armor using the GeckoLib library and plugin.","has_changelog":true,"min_version":"4.11.0","max_version":"5.0.0","variant":"both","website":"https://github.com/bernie-g/geckolib/wiki","repository":"https://github.com/JannisX11/blockbench-plugins/tree/master/plugins/animation_utils","bug_tracker":"https://github.com/bernie-g/geckolib/issues"},"sideEffects":["./index.js"],"devDependencies":{"@types/jest":"^29.5.4","@types/lodash":"^4.14.197","@typescript-eslint/eslint-plugin":"^6.5.0","@typescript-eslint/parser":"^6.5.0","blockbench-types":"^4.9.0","eol":"0.9.1","eslint":"^7.7.0","indent-string":"^5.0.0","jest":"^29.6.4","ts-jest":"^29.1.1","ts-loader":"^9.4.4","typescript":"^4.9.5","webpack":"^5.88.2","webpack-cli":"^5.1.4"},"dependencies":{"lodash":"^4.17.21","semver":"7.3.2"}}');
+module.exports = JSON.parse('{"name":"animation_utils","version":"4.1","private":true,"description":"GeckoLib","main":"index.js","scripts":{"prebuild":"npm run test","build":"npm run build:only","build:only":"webpack && npm run update_manifest","update_manifest":"node scripts/updateManifest.mjs","start":"webpack --watch --mode=development","lint":"eslint .","lint:fix":"eslint --fix .","tsc":"tsc --noEmit","pretest":"npm run lint && npm run tsc","test":"npm run test:only","test:only":"jest"},"author":"Eliot Lash, Tslat, Gecko, McHorse","license":"MIT","blockbenchConfig":{"title":"GeckoLib Animation Utils","author":"Eliot Lash, Tslat, Gecko, McHorse","icon":"icon.png","description":"Create animated blocks, items, entities, and armor using the GeckoLib library and plugin.","has_changelog":true,"min_version":"4.11.0","max_version":"5.0.0","variant":"both","website":"https://github.com/bernie-g/geckolib/wiki","repository":"https://github.com/JannisX11/blockbench-plugins/tree/master/plugins/animation_utils","bug_tracker":"https://github.com/bernie-g/geckolib/issues"},"sideEffects":["./index.js"],"devDependencies":{"@types/jest":"^29.5.4","@types/lodash":"^4.14.197","@typescript-eslint/eslint-plugin":"^6.5.0","@typescript-eslint/parser":"^6.5.0","blockbench-types":"^4.9.0","eol":"0.9.1","eslint":"^7.7.0","indent-string":"^5.0.0","jest":"^29.6.4","ts-jest":"^29.1.1","ts-loader":"^9.4.4","typescript":"^4.9.5","webpack":"^5.88.2","webpack-cli":"^5.1.4"},"dependencies":{"lodash":"^4.17.21","semver":"7.3.2"}}');
 
 /***/ }),
 

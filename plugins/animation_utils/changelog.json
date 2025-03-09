@@ -127,5 +127,18 @@
         ]
       }
     ]
+  },
+  "4.1": {
+    "title": "4.1",
+    "author": "Zigy",
+    "categories": [
+      {
+        "title": "New Features",
+        "list": [
+          "Added support for Catmull-Rom easing.",
+          "Added option for no easing."
+        ]
+      }
+    ]
   }
 }

@@ -236,6 +236,19 @@ class Easing {
             return 1 - easing((1 - t) * 2) / 2;
         };
     }
+
+    /**
+     * No easing, just snaps to the next keyframe when it's timestamp is reached.
+     */
+    static singleStep(t: number) {
+        return t === 1 ? 1 : 0;
+    }
+
+    static catmullRom(n1: number, n2:number, n3:number, n4: number, t: number) {
+        return 0.5 * (2.0 * n2 + (n3 - n1) * t +
+                (2.0 * n1 - 5.0 * n2 + 4.0 * n3 - n4) * t * t +
+                (3.0 * n2 - n1 - 3.0 * n3 + n4) * t * t * t);
+    }
 }
 
 const quart = Easing.poly(4);
@@ -280,6 +293,8 @@ export const easingFunctions = {
   easeInBounce: bounce.bind(null, Easing.in),
   easeOutBounce: bounce.bind(null, Easing.out),
   easeInOutBounce: bounce.bind(null, Easing.inOut),
+  single_step: Easing.singleStep,
+  catmullrom: Easing.catmullRom,
 };
 
 export type EasingKey = keyof typeof easingFunctions;
