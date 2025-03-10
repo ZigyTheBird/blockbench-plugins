@@ -34,6 +34,7 @@ export function updateKeyframeEasing(value) {
   if (value === "-") return;
   Timeline.selected.forEach((kf: GeckolibKeyframe) => {
     kf.easing = value;
+    kf.easingArgs = undefined;
   })
   window.updateKeyframeSelection(); // Ensure easingArg display is updated
   // Animator.preview();
